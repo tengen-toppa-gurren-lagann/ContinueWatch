@@ -1,21 +1,20 @@
 package ru.spbstu.icc.kspt.lab2.continuewatch
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    private var secondsElapsed: Int = 0
-    private lateinit var textSecondsElapsed: TextView
-    private var visibility  : Boolean = true
+    var secondsElapsed: Int = 0
+    lateinit var textSecondsElapsed: TextView
+    var visibility  : Boolean = true
 
-    @SuppressLint("SetTextI18n")
     var backgroundThread = Thread {
         while (true) {
             if (visibility) {
                 textSecondsElapsed.post {
-                    textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed++
+                    textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
+                    //textSecondsElapsed.setText("Seconds elapsed: " + secondsElapsed++)
                 }
                 Thread.sleep(1000)
             }
