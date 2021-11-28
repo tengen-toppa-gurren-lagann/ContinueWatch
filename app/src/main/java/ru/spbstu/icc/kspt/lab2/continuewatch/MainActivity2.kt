@@ -7,17 +7,19 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity2 : AppCompatActivity() {
-    var secondsElapsed: Int = 0
-    lateinit var textSecondsElapsed: TextView
-    var visibility  : Boolean = true
+    private var secondsElapsed: Int = 0
+    private lateinit var textSecondsElapsed: TextView
+    private var isvisible  : Boolean = true
     private lateinit var sharedPref: SharedPreferences
 
-    var backgroundThread = Thread {
+    private var backgroundThread = Thread {
         while (true) {
-            textSecondsElapsed.post {
-                textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
+            if (isvisible) {
+                textSecondsElapsed.post {
+                    textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
+                }
+                Thread.sleep(1000)
             }
-            Thread.sleep(1000)
         }
     }
 
@@ -30,13 +32,13 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     override fun onResume() {
-        visibility = true
+        isvisible = true
         secondsElapsed = sharedPref.getInt("SEC", 0)
         super.onResume()
     }
 
     override fun onStop() {
-        visibility = false
+        isvisible = false
         val editor = sharedPref.edit()
         editor.putInt("SEC", secondsElapsed)
         editor.apply()
