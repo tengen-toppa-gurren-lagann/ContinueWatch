@@ -1,6 +1,5 @@
 package ru.spbstu.icc.kspt.lab2.continuewatch
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -10,16 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity2 : AppCompatActivity() {
     private var secondsElapsed: Int = 0
     private lateinit var textSecondsElapsed: TextView
-    private var visibility  : Boolean = true
+    private var isvisible : Boolean = true
     private lateinit var sharedPref: SharedPreferences
+    private val sharedPrefName = "SEC"
 
-    @SuppressLint("SetTextI18n")
-    var backgroundThread = Thread {
+    private var backgroundThread = Thread {
         while (true) {
-            textSecondsElapsed.post {
-                textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed++
+            if (isvisible) {
+                textSecondsElapsed.post {
+                    textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
+                }
+                Thread.sleep(1000)
             }
-            Thread.sleep(1000)
         }
     }
 
@@ -27,21 +28,21 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         textSecondsElapsed = findViewById(R.id.textSecondsElapsed)
-        sharedPref = getSharedPreferences("SEC", Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
         backgroundThread.start()
     }
 
-    override fun onStop() {
-        visibility = false
+    override fun onPause() {
+        isvisible = false
         val editor = sharedPref.edit()
-        editor.putInt("SEC", secondsElapsed)
+        editor.putInt(sharedPrefName, secondsElapsed)
         editor.apply()
-        super.onStop()
+        super.onPause()
     }
 
     override fun onResume() {
-        visibility = true
-        secondsElapsed = sharedPref.getInt("SEC", 0)
+        isvisible = true
+        secondsElapsed = sharedPref.getInt(sharedPrefName, 0)
         super.onResume()
     }
 }

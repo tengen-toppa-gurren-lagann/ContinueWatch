@@ -1,6 +1,5 @@
 package ru.spbstu.icc.kspt.lab2.continuewatch
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -8,14 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity() {
     private var secondsElapsed: Int = 0
     private lateinit var textSecondsElapsed: TextView
-    private var visibility  : Boolean = true
+    private var isvisible : Boolean = true
 
-    @SuppressLint("SetTextI18n")
-    var backgroundThread = Thread {
+    private var backgroundThread = Thread {
         while (true) {
-            if (visibility) {
+            if (isvisible) {
                 textSecondsElapsed.post {
-                    textSecondsElapsed.text = "Seconds elapsed: " + secondsElapsed++
+                    textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
                 }
                 Thread.sleep(1000)
             }
@@ -30,22 +28,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        visibility  = true
+        isvisible  = true
         super.onResume()
     }
 
-    override fun onStop() {
-        visibility  = false
-        super.onStop()
+    override fun onPause() {
+        isvisible  = false
+        super.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.run{putInt("SEC", secondsElapsed)}
+        outState.putInt("SEC", secondsElapsed)
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState.run{secondsElapsed = getInt("SEC")}
+        secondsElapsed = savedInstanceState.getInt("SEC")
     }
 }
