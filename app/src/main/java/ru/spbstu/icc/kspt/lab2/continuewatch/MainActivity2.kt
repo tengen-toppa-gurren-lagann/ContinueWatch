@@ -37,11 +37,11 @@ class MainActivity2 : AppCompatActivity() {
         super.onResume()
     }
 
-    override fun onStop() {
+    override fun onPause() {
         isvisible = false
         val editor = sharedPref.edit()
         editor.putInt("SEC", secondsElapsed)
         editor.apply()
-        super.onStop()
+        super.onPause()
     }
 }
